@@ -181,7 +181,7 @@ public class StaticVoyageData {
         minute = (int)strbuildtodec(288,293,6,bin,int.class);
         draught = (int)strbuildtodec(294,301,8,bin,int.class);
         destn = (String) strbuildtodec(302,421,120,bin,String.class);
-        dte = (boolean)strbuildtodec(422,422,1,bin,int.class);
+        dte = (int)strbuildtodec(422,422,1,bin,int.class) > 0;
         reserved = (int)strbuildtodec(423,423,1,bin,int.class);
     }
 
