@@ -9,11 +9,11 @@ public class PostnReportClassA {
     private long mmsi;
     private int status;
     private int turn;
-    private int speed;
+    private float speed;
     private boolean accuracy;
     private double lon;
     private double lat;
-    private int course;
+    private float course;
     private int heading;
     private int sec;
     private int maneuver;
@@ -66,7 +66,7 @@ public class PostnReportClassA {
         return turn;
     }
 
-    public int getSpeed()
+    public float getSpeed()
     {
         return speed;
     }
@@ -86,7 +86,7 @@ public class PostnReportClassA {
         return lat;
     }
 
-    public int getCourse()
+    public float getCourse()
     {
         return course;
     }
@@ -125,14 +125,14 @@ public class PostnReportClassA {
         status = (int)strbuildtodec(38,41,4,bin,int.class);
         turn = (int)strbuildtodec(42,49,8,bin,int.class);
         speed = (int)strbuildtodec(50,59,10,bin,int.class);
-        accuracy = (boolean)strbuildtodec(60,60,1,bin,int.class);
+        accuracy = ((int) (strbuildtodec(60, 60, 1, bin, int.class)) > 0 );
         lon = (long)strbuildtodec(61,88,28,bin,long.class)/600000.0;
         lat = (long)strbuildtodec(89,115,27,bin,long.class)/600000.0;
         course = (int)strbuildtodec(116,127,12,bin,int.class);
         heading = (int)strbuildtodec(128,136,9,bin,int.class);
         sec = (int)strbuildtodec(137,142,6,bin,int.class);
         maneuver = (int)strbuildtodec(143,144,2,bin,int.class);
-        raim = (boolean)strbuildtodec(148,148,1,bin,int.class);
+        raim = ((int) (strbuildtodec(148,148,1,bin,int.class)) > 0);
         radio = (long)strbuildtodec(149,167,19,bin,long.class);
     }
 

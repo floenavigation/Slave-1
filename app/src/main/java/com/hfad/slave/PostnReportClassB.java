@@ -157,20 +157,20 @@ public class PostnReportClassB {
         mmsi =  (long)strbuildtodec(8,37,30,bin,long.class);
         regReserved1 = (int)strbuildtodec(38,45,8,bin,int.class);
         speed = (int)strbuildtodec(46,55,10,bin,int.class);
-        accuracy = (boolean)strbuildtodec(56,56,1,bin,boolean.class);
-        lon = (long)strbuildtodec(57,84,28,bin,long.class)/600000.0;
-        lat = (long)strbuildtodec(85,111,27,bin,long.class)/600000.0;
+        accuracy = (int)strbuildtodec(56,56,1,bin,int.class) > 0;
+        lon = (long)strbuildtodec(57,84,28,bin,long.class) / 600000.0;
+        lat = (long)strbuildtodec(85,111,27,bin,long.class) / 600000.0;
         course = (int)strbuildtodec(112,123,12,bin,int.class);
         heading = (int)strbuildtodec(124,132,9,bin,int.class);
         sec = (int)strbuildtodec(133,138,6,bin,int.class);
         regReserved2 = (int)strbuildtodec(139,140,2,bin,int.class);
-        csUnit = (boolean)strbuildtodec(141,141,1,bin,int.class);
-        dispFlag = (boolean)strbuildtodec(142,142,1,bin,int.class);
-        dscFlag = (boolean)strbuildtodec(143,143,1,bin,int.class);
-        bandFlag = (boolean)strbuildtodec(144,144,1,bin,int.class);
-        msg22Flag = (boolean)strbuildtodec(145,145,1,bin,int.class);
-        assigned = (boolean)strbuildtodec(146,146,1,bin,int.class);
-        raim = (boolean)strbuildtodec(147,147,1,bin,int.class);
+        csUnit = (int)strbuildtodec(141,141,1,bin,int.class) > 0;
+        dispFlag = (int)strbuildtodec(142,142,1,bin,int.class) > 0;
+        dscFlag = (int)strbuildtodec(143,143,1,bin,int.class) > 0;
+        bandFlag = (int)strbuildtodec(144,144,1,bin,int.class) > 0;
+        msg22Flag = (int)strbuildtodec(145,145,1,bin,int.class) > 0;
+        assigned = (int)strbuildtodec(146,146,1,bin,int.class) > 0;
+        raim = (int)strbuildtodec(147,147,1,bin,int.class) > 0;
         radio = (int)strbuildtodec(148,167,20,bin,int.class);
     }
 

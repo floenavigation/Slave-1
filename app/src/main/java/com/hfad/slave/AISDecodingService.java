@@ -39,8 +39,8 @@ public class AISDecodingService extends IntentService {
     private long recvdMMSI;
     private double recvdLat;
     private double recvdLon;
-    private int recvdSpeed;
-    private int recvdCourse;
+    private float recvdSpeed;
+    private float recvdCourse;
     private int recvdTimeStamp;
     private String recvdStationName;
     private BroadcastReceiver wifiReceiver;
@@ -209,7 +209,7 @@ public class AISDecodingService extends IntentService {
                                     db.update("AISMOBILESTATION", decodedValues, null, null);
                                     break;
                                 }
-                            }while(cursor_fixedstnlist.moveToNext());
+                            }while(cursor_mobilestnlist.moveToNext());
 
                             if(!cursor_mobilestnlist.moveToNext()) {
                                 //Writing to the database table AISMOBILESTATION
