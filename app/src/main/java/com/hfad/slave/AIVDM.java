@@ -55,13 +55,17 @@ public class AIVDM {
     //Should be called by the WiFi Service
     public void setData(String[] dataExtr)
     {
-        packetName = dataExtr[0];
-        fragCount = Integer.parseInt(dataExtr[1]);
-        fragNum = Integer.parseInt(dataExtr[2]);
-        seqMsgID = (("".equals(dataExtr[3]))? -1 : Integer.parseInt(dataExtr[3]));
-        channelCode = dataExtr[4].charAt(0);
-        payload = dataExtr[5];
-        eod = dataExtr[6].split("\\*")[1];
+        try{
+            packetName = dataExtr[0];
+            fragCount = Integer.parseInt(dataExtr[1].split("\\.")[0]);
+            fragNum = Integer.parseInt(dataExtr[2].split("\\.")[0]);
+            seqMsgID = (("".equals(dataExtr[3]))? -1 : Integer.parseInt(dataExtr[3]));
+            channelCode = ((dataExtr[4].length() > 0)? dataExtr[4].charAt(0) : '-');
+            payload = dataExtr[5];
+            eod = dataExtr[6].split("\\*")[1];
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public StringBuilder decodePayload()
@@ -80,6 +84,20 @@ public class AIVDM {
         }
 
         return binary;
+        /*
+        byte[] bytes = payload.getBytes();
+        StringBuilder binary = new StringBuilder();
+        for (byte b : bytes)
+        {
+            int val = b;
+            for (int i = 0; i < 8; i++)
+            {
+                binary.append((val & 128) == 0 ? 0 : 1);
+                val <<= 1;
+            }
+            // binary.append(' ');
+        }
+        return binary; */
     }
 
 

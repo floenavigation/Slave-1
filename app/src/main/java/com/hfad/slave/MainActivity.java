@@ -56,6 +56,8 @@ public class MainActivity extends Activity{
         buttonConnect = (Button) findViewById(R.id.connectButton);
         buttonClear = (Button) findViewById(R.id.clearButton);
         response = (TextView) findViewById(R.id.responseTextView);
+        final Thread[] aisMessageReceiver = new Thread[1];
+        final AISMessageReceiver[] aisMessage = new AISMessageReceiver[1];
 
         runtime_permissions();
 
@@ -64,10 +66,10 @@ public class MainActivity extends Activity{
             @Override
             public void onClick(View arg0) {
 
-                Client myClient = new Client(editTextAddress.getText()
+                /*Client myClient = new Client(editTextAddress.getText()
                         .toString(), Integer.parseInt(editTextPort
                         .getText().toString()), response);
-                myClient.execute();
+                myClient.execute();*/
                 /*
                 try {
                     socket = new Socket("192.168.0.2", 3000);
@@ -75,6 +77,11 @@ public class MainActivity extends Activity{
                 } catch (IOException e) {
                     e.printStackTrace();
                 }*/
+
+                aisMessage[0] = new AISMessageReceiver(editTextAddress.getText().toString(), Integer.parseInt(editTextPort.getText().toString()), getApplicationContext());
+                aisMessageReceiver[0] = new Thread(aisMessage[0]);
+                aisMessageReceiver[0].start();
+
 
             }
         });
@@ -84,6 +91,10 @@ public class MainActivity extends Activity{
             @Override
             public void onClick(View v) {
                 response.setText("");
+                if(aisMessageReceiver[0].isAlive()) {
+                    aisMessageReceiver[0].interrupt();
+                    aisMessage[0].disconnect();
+                }
             }
         });
     }
