@@ -70,13 +70,6 @@ public class MainActivity extends Activity{
                         .toString(), Integer.parseInt(editTextPort
                         .getText().toString()), response);
                 myClient.execute();*/
-                /*
-                try {
-                    socket = new Socket("192.168.0.2", 3000);
-                    readLogic();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }*/
 
                 aisMessage[0] = new AISMessageReceiver(editTextAddress.getText().toString(), Integer.parseInt(editTextPort.getText().toString()), getApplicationContext());
                 aisMessageReceiver[0] = new Thread(aisMessage[0]);

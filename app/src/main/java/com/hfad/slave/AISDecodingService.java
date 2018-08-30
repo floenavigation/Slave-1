@@ -58,53 +58,23 @@ public class AISDecodingService extends IntentService {
         dataReportObj = new StaticDataReport(); //24
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(wifiReceiver);
-    }
 
-    /*    //Declare Interface
-    public static interface Callbacks{
-        public String onPacketReceived();
-    }
-
-    public void setCallbacks(Callbacks callback){
-        this.sCallbacks = callback;
-    }*/
-
-
-
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
-        handler = new Handler();
-        Log.d(TAG, "Service OnStart Command");
-        wifiReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                if(intent.getExtras().get("AISPACKET") != null) {
-                    packet = intent.getExtras().get("AISPACKET").toString();
-
-                }
-            }
-        };
-        registerReceiver(wifiReceiver, new IntentFilter("RECEIVED_PACKET"));
-        return super.onStartCommand(intent, flags, startId);
-    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d(TAG, "Service OnStart Command");
 
-        synchronized (this){
+        /*synchronized (this){
             try{
-                wait(10000);
+                wait(1000);
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
-        }
+        }*/
         try
         {
+            packet = intent.getExtras().getString("AISPacket");
+
             /*SQLiteOpenHelper aisDecoderDatabaseHelper = new AISDecoderDatabaseHelper(this);
             SQLiteDatabase db = aisDecoderDatabaseHelper.getReadableDatabase();
             Cursor cursor_stnlist = db.query("AISSTATIONLIST",
@@ -124,7 +94,7 @@ public class AISDecodingService extends IntentService {
                     null,
                     null,
                     null, null, null);*/
-            SQLiteOpenHelper databaseHelper = new DatabaseHelper(this);
+           /* SQLiteOpenHelper databaseHelper = new DatabaseHelper(this);
             SQLiteDatabase db = databaseHelper.getReadableDatabase();
             Cursor cursor_stnlist = db.query(DatabaseHelper.stationListTable,
                     new String[] {DatabaseHelper.mmsi, DatabaseHelper.stationName},
@@ -136,16 +106,16 @@ public class AISDecodingService extends IntentService {
                     null,
                     null,
                     null,
-                    null, null, null);
+                    null, null, null);*/
 
-            Cursor cursor_mobilestnlist = db.query(DatabaseHelper.mobileStationTable,
+            //Mobile Station Disabled for now. Uncomment later
+            /*Cursor cursor_mobilestnlist = db.query(DatabaseHelper.mobileStationTable,
                     null,
                     null,
                     null,
-                    null, null, null);
+                    null, null, null);*/
 
             int num = 0;
-
 
             if(packet != null) {
                 Log.d(TAG, packet);
@@ -156,7 +126,7 @@ public class AISDecodingService extends IntentService {
                 msgDecoding(num, binary);
             }
 
-            if(cursor_stnlist.moveToFirst())
+            /*if(cursor_stnlist.moveToFirst())
             {
                 do{
                     long mmsi = cursor_stnlist.getLong(cursor_stnlist.getColumnIndex(DatabaseHelper.mmsi));
@@ -167,7 +137,7 @@ public class AISDecodingService extends IntentService {
                     //Decoding logic
                     //String packet = "!AIVDM,1,1,1,B,15UDQt001aPT136NlWiD93E20<<P,0*30"; //will be received from Wifi Service
 
-                    /*Log.d("decoded", String.valueOf(posObjA.getMsgInd()));
+                    *//*Log.d("decoded", String.valueOf(posObjA.getMsgInd()));
                     Log.d("decoded", String.valueOf(posObjA.getRepeatInd()));
                     Log.d("decoded", String.valueOf(posObjA.getMMSI()));
                     Log.d("decoded", String.valueOf(posObjA.getStatus()));
@@ -181,7 +151,7 @@ public class AISDecodingService extends IntentService {
                     Log.d("decoded", String.valueOf(posObjA.getSeconds()));
                     Log.d("decoded", String.valueOf(posObjA.getManeuver()));
                     Log.d("decoded", String.valueOf(posObjA.getRaim()));
-                    Log.d("decoded", String.valueOf(posObjA.getRadio()));*/
+                    Log.d("decoded", String.valueOf(posObjA.getRadio()));*//*
                     if(recvdMMSI == mmsi){
 
                             //Writing to the database table AISFIXEDSTATIONPOSITION
@@ -218,7 +188,7 @@ public class AISDecodingService extends IntentService {
                                 }
                                 db.insert(DatabaseHelper.fixedStationTable, null, decodedValues);
                             }
-                    }
+                    }*//* Uncomment later
                     else{
                             cursor_mobilestnlist.moveToFirst();
                             do{
@@ -252,17 +222,18 @@ public class AISDecodingService extends IntentService {
                                 }
                                 db.insert(DatabaseHelper.mobileStationTable, null, decodedValues);
                             }
-                    }
+                    }*//*
 
                 }while(cursor_stnlist.moveToNext());
 
             }
+*/
 
-
-            cursor_stnlist.close();
-            cursor_fixedstnlist.close();
-            cursor_mobilestnlist.close();
-            db.close();
+            //cursor_stnlist.close();
+            //cursor_fixedstnlist.close();
+            //Uncomment later
+            // cursor_mobilestnlist.close();
+            //db.close();
         }catch (SQLException e)
         {
             String text = "Database unavailable";

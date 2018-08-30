@@ -41,24 +41,23 @@ public class AISMessageReceiver implements Runnable {
             client.connect(dstAddress, dstPort);
             isConnected = true;
             bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            Intent serviceIntent = new Intent(context, AISDecodingService.class);
-            context.startService(serviceIntent);
+            /*Intent serviceIntent = new Intent(context, AISDecodingService.class);
+            context.startService(serviceIntent);*/
 
             do{
                 while(bufferedReader.read() != -1) {
                     responseString.append(bufferedReader.readLine());
-                    if (responseString.toString().contains("AIVDM")) {
+                    if (responseString.toString().contains("AIVDM") || responseString.toString().contains("AIVDO")) {
                         packet = responseString.toString();
-
-                        responseString.setLength(0);
-                    } else if (responseString.toString().contains("AIVDO")) {
-                        packet = responseString.toString();
-
-                        responseString.setLength(0);
+                        //responseString.setLength(0);
+                        Intent serviceIntent = new Intent(context, AISDecodingService.class);
+                        serviceIntent.putExtra("AISPacket", packet);
+                        context.startService(serviceIntent);
                     }
-                    Intent intent = new Intent("RECEIVED_PACKET");
+                    responseString.setLength(0);
+                    /*Intent intent = new Intent("RECEIVED_PACKET");
                     intent.putExtra("AISPACKET", packet);
-                    this.context.sendBroadcast(intent);
+                    this.context.sendBroadcast(intent);*/
                     //Log.d(TAG, packet);
                 }
             } while (isConnected);

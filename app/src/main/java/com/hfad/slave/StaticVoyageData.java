@@ -1,6 +1,7 @@
 package com.hfad.slave;
 
 
+import static com.hfad.slave.AIVDM.convertToString;
 import static com.hfad.slave.AIVDM.strbuildtodec;
 
 public class StaticVoyageData {
@@ -167,8 +168,8 @@ public class StaticVoyageData {
         mmsi =  (long)strbuildtodec(8,37,30,bin,long.class);
         aisVersion = (int)strbuildtodec(38,39,2,bin,int.class);
         imoNumber = (int)strbuildtodec(40,69,30,bin,int.class);
-        callSign = (String) strbuildtodec(70,111,42,bin,String.class);
-        vesselName = (String)strbuildtodec(112,231,120,bin,String.class);
+        callSign = convertToString(70,111,42,bin);//strbuildtodec(70,111,42,bin,int.class).toString();
+        vesselName = convertToString(112,231,120,bin);//strbuildtodec(112,231,120,bin,int.class).toString();
         shipType = (int)strbuildtodec(232,239,8,bin,int.class);
         dimToBow = (int)strbuildtodec(240,248,9,bin,int.class);
         dimToStern = (int)strbuildtodec(249,257,9,bin,int.class);
@@ -179,10 +180,10 @@ public class StaticVoyageData {
         day = (int)strbuildtodec(278,282,5,bin,int.class);
         hour = (int)strbuildtodec(283,287,5,bin,int.class);
         minute = (int)strbuildtodec(288,293,6,bin,int.class);
-        draught = (int)strbuildtodec(294,301,8,bin,int.class);
-        destn = (String) strbuildtodec(302,421,120,bin,String.class);
-        dte = (int)strbuildtodec(422,422,1,bin,int.class) > 0;
-        reserved = (int)strbuildtodec(423,423,1,bin,int.class);
+        draught = (int)strbuildtodec(294,301,8,bin,int.class) / 10;
+       // destn = strbuildtodec(302,421,120,bin,int.class).toString();
+        //dte = (int)strbuildtodec(422,422,1,bin,int.class) > 0;
+        //reserved = (int)strbuildtodec(423,423,1,bin,int.class);
     }
 
 
