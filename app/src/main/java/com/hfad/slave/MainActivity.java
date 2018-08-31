@@ -3,10 +3,13 @@ package com.hfad.slave;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -56,8 +59,11 @@ public class MainActivity extends Activity{
         buttonConnect = (Button) findViewById(R.id.connectButton);
         buttonClear = (Button) findViewById(R.id.clearButton);
         response = (TextView) findViewById(R.id.responseTextView);
-        final Thread[] aisMessageReceiver = new Thread[1];
+        final Thread[] aisMessageReceiver = new Thread[2];
         final AISMessageReceiver[] aisMessage = new AISMessageReceiver[1];
+        insertIntoDatabase();
+
+
 
         runtime_permissions();
 
@@ -74,9 +80,45 @@ public class MainActivity extends Activity{
                 aisMessage[0] = new AISMessageReceiver(editTextAddress.getText().toString(), Integer.parseInt(editTextPort.getText().toString()), getApplicationContext());
                 aisMessageReceiver[0] = new Thread(aisMessage[0]);
                 aisMessageReceiver[0].start();
+                aisMessageReceiver[1] = new Thread(new Runnable() {
 
 
-            }
+                    @Override
+                    public void run() {
+                        SQLiteDatabase db;
+                        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+                        db = databaseHelper.getReadableDatabase();
+                        Cursor readFromDb;
+                        while (true) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            Log.d("Reading from DB:", "Button Click");
+                            readFromDb = db.query(DatabaseHelper.fixedStationTable,
+                                    new String[]{DatabaseHelper.mmsi, DatabaseHelper.latitude, DatabaseHelper.longitude, DatabaseHelper.sog, DatabaseHelper.cog, DatabaseHelper.updateTime},
+                                    null,
+                                    null,
+                                    null, null, null);
+                            if (readFromDb.moveToFirst()) {
+                                do {
+                                    Log.d("Reading from DB: ", String.valueOf(readFromDb.getInt(readFromDb.getColumnIndex(DatabaseHelper.mmsi))));
+                                    Log.d("Reading from DB: ", String.valueOf(readFromDb.getDouble(readFromDb.getColumnIndex(DatabaseHelper.latitude))));
+                                    Log.d("Reading from DB: ", String.valueOf(readFromDb.getDouble(readFromDb.getColumnIndex(DatabaseHelper.longitude))));
+                                    Log.d("Reading from DB: ", String.valueOf(readFromDb.getDouble(readFromDb.getColumnIndex(DatabaseHelper.sog))));
+                                    Log.d("Reading from DB: ", String.valueOf(readFromDb.getDouble(readFromDb.getColumnIndex(DatabaseHelper.cog))));
+                                    //Log.d("Reading from DB: ", readFromDb.getString(readFromDb.getColumnIndex(DatabaseHelper.updateTime)));
+                                } while (readFromDb.moveToNext());
+                            }
+                            readFromDb.close();
+
+                        }
+                    }
+                });
+                aisMessageReceiver[1].start();
+                }
+
         });
 
         buttonClear.setOnClickListener(new OnClickListener() {
@@ -87,9 +129,13 @@ public class MainActivity extends Activity{
                 if(aisMessageReceiver[0].isAlive()) {
                     aisMessageReceiver[0].interrupt();
                     aisMessage[0].disconnect();
+
                 }
             }
         });
+
+
+
     }
 
     private void runtime_permissions() {
@@ -127,7 +173,26 @@ public class MainActivity extends Activity{
         }
     }
 
+    private void insertIntoDatabase(){
+        int mmsi_M01 = 211003815;
+        int mmsi_B01 = 211003810;
+        SQLiteDatabase db;
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        db = databaseHelper.getWritableDatabase();
+        ContentValues staticData_M01 = new ContentValues();
+        staticData_M01.put(DatabaseHelper.mmsi, mmsi_M01);
+        staticData_M01.put(DatabaseHelper.stationName, "TEST-MOSAIC-M01");
+        db.insert(DatabaseHelper.stationListTable, null, staticData_M01);
+        db.insert(DatabaseHelper.fixedStationTable, null, staticData_M01);
+        ContentValues staticData_B01 = new ContentValues();
+        staticData_B01.put(DatabaseHelper.mmsi, mmsi_B01);
+        staticData_B01.put(DatabaseHelper.stationName, "TEST-MOSAIC-B01");
+        db.insert(DatabaseHelper.stationListTable, null, staticData_B01);
+        db.insert(DatabaseHelper.fixedStationTable, null, staticData_B01);
+        db.close();
+    }
 
+/*
     class Client extends AsyncTask<Void, Void, String>{
 
         private String dstAddress;
@@ -138,8 +203,8 @@ public class MainActivity extends Activity{
         private TelnetClient chkClient;
         private String packet;
         private BufferedReader bufferedReader;
-/*        private static Pattern searchPattern_AIVDM;
-        private static Pattern searchPattern_AIVDO;*/
+*//*        private static Pattern searchPattern_AIVDM;
+        private static Pattern searchPattern_AIVDO;*//*
         private Pattern searchPattern_AIVDM = Pattern.compile("AIVDM");
         private Pattern searchPattern_AIVDO = Pattern.compile("AIVDO");
         private Matcher matcherString_AIVDM;
@@ -202,12 +267,12 @@ public class MainActivity extends Activity{
                         Intent intent = new Intent("RECEIVED_PACKET");
                         intent.putExtra("AISPACKET", packet);
                         sendBroadcast(intent);
-                        /*runOnUiThread(new Runnable() {
+                        *//*runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
 
                             }
-                        });*/
+                        });*//*
 
                     }
 
@@ -243,12 +308,12 @@ public class MainActivity extends Activity{
             //super.onPostExecute(result);
         }
 
-        /*//Interface
+        //Interface
         @Override
         public String onPacketReceived() {
             return packet;
-        }*/
-    }
+        }
+    }*/
 
 
 
